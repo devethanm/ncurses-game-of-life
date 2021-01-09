@@ -6,7 +6,7 @@
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
-
+void changeYX(int ch, int* curry, int* currx);
 int main() {
 	WINDOW *gameWindow;
 	int startx, starty, width, height; // gameWindow properties
@@ -19,6 +19,7 @@ int main() {
 
 	// init functions
 	initscr();
+	keypad(stdscr, TRUE);
 	noecho();
 	// cbreak(); // line buffering disabled
 	getmaxyx(stdscr, row, col); // get rows and columns of stdscr window
@@ -36,12 +37,16 @@ int main() {
 	starty = (LINES - height)/2;
 	startx = (COLS - width)/2;
 	gameWindow = create_newwin(height, width, starty, startx);
+	int currx = 0;
+    int curry = 0;
 
-	// game loop (press q to quit)	
+	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
 
+		changeYX(ch,&curry,&currx);
+		wmove(gameWindow, curry, currx);
+		wrefresh(gameWindow);
 	}
-
 	
 	endwin();
 	return 0;
@@ -62,4 +67,22 @@ void destroy_win(WINDOW *local_win) {
 	wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '); // ugly for now
 	wrefresh(local_win);
 	delwin(local_win);
+}
+// Use pointers to update current x,y
+void changeYX(int ch, int *curry, int *currx){
+	switch (ch)
+        {
+          case KEY_LEFT:
+            *currx = *currx-1;
+            break;
+          case KEY_RIGHT:
+            *currx = *currx+1;
+            break;
+          case KEY_UP:
+            *curry = *curry-1;
+            break;
+          case KEY_DOWN:
+            *curry = *curry+1;
+            break;
+        }
 }
