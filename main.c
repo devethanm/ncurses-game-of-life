@@ -12,9 +12,10 @@ int main() {
 	int startx, starty, width, height; // gameWindow properties
 	char title[] = "The Game of Life";
 	char instructions1[] = "Use vim or arrow keys to navigate to a cell, use enter to bring the cell to life";
-	char instructions2[] = "Will add this line of instructions later";
+	char instructions2[] = "Will update this line of instructions later";
 	char exitMessage[] = "Press 'q' to quit";
-	int row, col; // the ncurses window's rows and columns
+	int row, col; // the stdscr window's rows and columns
+	int gameRow, gameCol; // the game window's rows and columns
 	int ch; // stores user char input from getch()	
 
 	// init functions
@@ -23,7 +24,6 @@ int main() {
 	noecho();
 	// cbreak(); // line buffering disabled
 	getmaxyx(stdscr, row, col); // get rows and columns of stdscr window
-	
 	// printing title and instructions to stdscr 
 	mvprintw(0, (col-strlen(title))/2, "%s", title); 
 	mvprintw(1, (col-strlen(instructions1))/2, "%s", instructions1); 
@@ -32,17 +32,19 @@ int main() {
 	refresh();
 
 	// creating gameWindow and its properties
-	height = LINES - 4; // subtract 4 to compensate for the 4 lines we printed above
+	height = LINES - 4; // subtract 4 to compensate for the 3 lines we printed above the game window
 	width = COLS;
-	starty = (LINES - height)/2;
-	startx = (COLS - width)/2;
+	starty = (LINES - height) / 2;
+	startx = (COLS - width) / 2;
 	gameWindow = create_newwin(height, width, starty, startx);
-	int currx = 0;
-    	int curry = 0;
+	getmaxyx(gameWindow, gameRow, gameCol); // get rows and columns of gameWindow
+	int currx = gameCol / 2;
+	int curry = gameRow / 2;
+	wmove(gameWindow, curry, currx); // set init cursor position to middle of gameWindow
+	refresh();
 
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
-
 		changeYX(ch,&curry,&currx);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
@@ -64,10 +66,11 @@ WINDOW *create_newwin(int height, int width, int starty, int startx) {
 }
 
 void destroy_win(WINDOW *local_win) {
-	wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '); // ugly for now
+	wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 	wrefresh(local_win);
 	delwin(local_win);
 }
+
 // Use pointers to update current x,y
 void changeYX(int ch, int *curry, int *currx){
 	switch (ch)
