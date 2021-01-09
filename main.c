@@ -38,7 +38,7 @@ int main() {
 	startx = (COLS - width)/2;
 	gameWindow = create_newwin(height, width, starty, startx);
 	int currx = 0;
-    int curry = 0;
+    	int curry = 0;
 
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
@@ -72,8 +72,9 @@ void destroy_win(WINDOW *local_win) {
 void changeYX(int ch, int *curry, int *currx){
 	switch (ch)
         {
+	  // ARROW KEYS
           case KEY_LEFT:
-            *currx = *currx-1;
+           *currx = *currx-1;
             break;
           case KEY_RIGHT:
             *currx = *currx+1;
@@ -84,5 +85,19 @@ void changeYX(int ch, int *curry, int *currx){
           case KEY_DOWN:
             *curry = *curry+1;
             break;
-        }
+
+	  // VIM KEYS
+          case 'h': // (left)
+            *currx = *currx-1;
+            break;
+          case 'l': // (right)
+            *currx = *currx+1;
+            break;
+          case 'k': // (up)
+            *curry = *curry-1;
+            break;
+          case 'j': // (down)
+            *curry = *curry+1;
+            break;
+	}
 }
