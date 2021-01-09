@@ -1,5 +1,5 @@
 CC=gcc
-FILES=main.c
+FILES=main.c sudoku.c
 FILES2 = main.h
 OUT_EXE = Hello.o
 all: $(FILES)

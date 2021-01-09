@@ -1,7 +1,10 @@
 #include <ncurses.h>
 #include <stdio.h>
+#include "sudoku.h"
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
+void build_color_pairs();
+
 int main() {
 
 	WINDOW *my_win;
@@ -14,21 +17,15 @@ int main() {
 	refresh();
 
 	start_color();								/* Initialize Color Pairs	*/
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_GREEN, COLOR_BLACK);
-	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(4, COLOR_BLUE, COLOR_BLACK);
-	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
-	init_pair(6, COLOR_CYAN, COLOR_BLACK);
-	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+	build_color_pairs();
 	attron(COLOR_PAIR(1));
 
 
 	cbreak();									/* Line buffering disabled	*/
 	keypad(stdscr, TRUE);						/* Get F1 Key */
 
-	height = 7;									/* Create window with box	*/
-	width = 12;
+	height = 15;								/* Create window with box	*/
+	width = 36;
 	starty = (LINES - height) / 2;
 	startx = (COLS - width) / 2;
 	my_win = create_newwin(height, width, starty, startx);
@@ -56,7 +53,10 @@ int main() {
 	}
 	destroy_win(my_win);
 	
-	
+	my_win = create_board(starty,startx);
+	draw_grid(my_win);
+	wrefresh(my_win);
+	wgetch(my_win);
 	endwin();
 
 	return 0;
@@ -68,7 +68,7 @@ WINDOW *create_newwin(int height, int width, int starty, int startx)
 	local_win = newwin(height, width, starty, startx);
 	box(local_win, 0 , 0);		
 
-	wrefresh(local_win);						/* Show that box 		*/
+	wrefresh(local_win);						/* Show that box */
 
 	return local_win;
 }
@@ -84,6 +84,18 @@ void destroy_win(WINDOW *local_win)
 	wrefresh(local_win);
 	delwin(local_win);
 }
+
+void build_color_pairs()
+{
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(4, COLOR_BLUE, COLOR_BLACK);
+	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(6, COLOR_CYAN, COLOR_BLACK);
+	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+}
+
 
 
 /* COLOR_BLACK   0
