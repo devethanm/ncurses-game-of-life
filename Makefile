@@ -8,5 +8,3 @@ clean:
 	rm -f *.o $(OUT_EXE)
 run:
 	./main.o
-#tar:
-	#tar -cv $(FILES) $(FILES2) README.txt > Damian-Armijo-HW1.tar
