@@ -19,7 +19,7 @@ int main() {
 		
 	// These last two lines are just a way to keep the program open,
 	// so it doesnt disapear instantly after running
-	getch();
+	// getch();
 	endwin();
 
 	return 0;
