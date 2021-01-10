@@ -6,7 +6,8 @@
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
-void changeYX(int ch, int* curry, int* currx);
+// not sure if maxy and x should be pointers we can optimize later
+void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
 int main() {
 	WINDOW *gameWindow;
 	int startx, starty, width, height; // gameWindow properties
@@ -38,14 +39,14 @@ int main() {
 	startx = (COLS - width) / 2;
 	gameWindow = create_newwin(height, width, starty, startx);
 	getmaxyx(gameWindow, gameRow, gameCol); // get rows and columns of gameWindow
-	int currx = gameCol / 2;
 	int curry = gameRow / 2;
+	int currx = gameCol / 2;
 	wmove(gameWindow, curry, currx); // set init cursor position to middle of gameWindow
 	refresh();
 
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
-		changeYX(ch,&curry,&currx);
+		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
 	}
@@ -72,35 +73,52 @@ void destroy_win(WINDOW *local_win) {
 }
 
 // Use pointers to update current x,y
-void changeYX(int ch, int *curry, int *currx){
+// not sure if maxy and x should be pointers we can optimize later
+void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 	switch (ch)
         {
 	  // ARROW KEYS
           case KEY_LEFT:
-           *currx = *currx-1;
+	   if(*currx > 1) {
+           	*currx = *currx-1;
+	   }
             break;
           case KEY_RIGHT:
-            *currx = *currx+1;
+	    if(*currx < maxx - 2) {
+            	*currx = *currx+1;
+	    }
             break;
           case KEY_UP:
-            *curry = *curry-1;
+	    if(*curry > 1) {
+            	*curry = *curry-1;
+	    }
             break;
           case KEY_DOWN:
-            *curry = *curry+1;
+	    if(*curry < maxy - 2) {
+            	*curry = *curry+1;
+	    }
             break;
 
 	  // VIM KEYS
           case 'h': // (left)
-            *currx = *currx-1;
+	    if(*currx > 1) {
+            	*currx = *currx-1;
+	    }
             break;
           case 'l': // (right)
-            *currx = *currx+1;
+	    if(*currx < maxx - 2) {
+            	*currx = *currx+1;
+	    }
             break;
           case 'k': // (up)
-            *curry = *curry-1;
+	    if(*curry > 1) {
+            	*curry = *curry-1;
+	    }
             break;
           case 'j': // (down)
-            *curry = *curry+1;
+	    if(*curry < maxy - 2) {
+            	*curry = *curry+1;
+	    }
             break;
 	}
 }
