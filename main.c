@@ -1,5 +1,9 @@
 // The Game of Life, written using ncurses
 
+/* TODO
+ * make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
+*/
+
 // ncurses.h includes stdio.h
 #include <ncurses.h>
 #include <string.h>
