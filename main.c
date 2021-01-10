@@ -51,14 +51,24 @@ int main() {
 	wmove(gameWindow, curry, currx); // set init cursor position to middle of gameWindow
 	refresh();
 
+	mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
+	wrefresh(gameWindow);
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
-		if(ch = 'e') { // we will use e as an edit key (cycles dead or alive on cells)
-			changeCell(*curry, *currx);
-		}
+
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
+		if (((winch(gameWindow) & A_CHARTEXT) == '*')){	// This checks if there is a specific thing at cursor
+														// and changes it if it is found
+			if (ch == 'e')
+			{
+				changeCell(&curry,&currx);
+				wprintw(gameWindow,"%c",'@');
+				wrefresh(gameWindow);
+			}
+			
+		}
 	}
 	
 	endwin();
@@ -85,55 +95,54 @@ void destroy_win(WINDOW *local_win) {
 // Use pointers to update current x,y
 // not sure if maxy and x should be pointers we can optimize later
 void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
-	switch (ch)
-        {
-	  // ARROW KEYS
-          case KEY_LEFT:
-	   if(*currx > 1) {
-           	*currx = *currx-1;
-	   }
-            break;
-          case KEY_RIGHT:
-	    if(*currx < maxx - 2) {
-            	*currx = *currx+1;
-	    }
-            break;
-          case KEY_UP:
-	    if(*curry > 1) {
-            	*curry = *curry-1;
-	    }
-            break;
-          case KEY_DOWN:
-	    if(*curry < maxy - 2) {
-            	*curry = *curry+1;
-	    }
-            break;
+	        
+	switch (ch){
+	// ARROW KEYS
+    	case KEY_LEFT:
+    		if(*currx > 1) {
+    			*currx = *currx-1;
+			}
+		   	break;
+        case KEY_RIGHT:
+			if(*currx < maxx - 2) {
+				*currx = *currx+1;
+			}
+		    break;
+        case KEY_UP:
+        	if(*curry > 1) {
+	            *curry = *curry-1;
+	        }
+	        break;
+        case KEY_DOWN:
+        	if(*curry < maxy - 2) {
+	            *curry = *curry+1;
+		    }
+		    break;
 
-	  // VIM KEYS
-          case 'h': // (left)
-	    if(*currx > 1) {
-            	*currx = *currx-1;
-	    }
-            break;
-          case 'l': // (right)
-	    if(*currx < maxx - 2) {
-            	*currx = *currx+1;
-	    }
-            break;
-          case 'k': // (up)
-	    if(*curry > 1) {
-            	*curry = *curuy-1;
-	    }
-            break;
-          case 'j': // (down)
-	    if(*curry < maxy - 2) {
-            	*curry = *curry+1;
-	    }
-            break;
+		  // VIM KEYS
+	        case 'h': // (left)
+			    if(*currx > 1) {
+		            	*currx = *currx-1;
+			    }
+	            break;
+	        case 'l': // (right)
+			    if(*currx < maxx - 2) {
+		            	*currx = *currx+1;
+			    }
+	            break;
+	        case 'k': // (up)
+			    if(*curry > 1) {
+		            	*curry = *curry-1;
+			    }
+	            break;
+	        case 'j': // (down)
+			    if(*curry < maxy - 2) {
+		            	*curry = *curry+1;
+			    }
+	            break;
 	}
 }
 
-void changeCell(int *y, int, *x) {
-			
-	return;
+void changeCell(int *y, int *x) {
+		return;
 }
