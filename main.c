@@ -1,7 +1,8 @@
 // The Game of Life, written using ncurses
 
 /* TODO
- * make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
+ * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program star
+ * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch 
 */
 
 // ncurses.h includes stdio.h
@@ -12,6 +13,8 @@ WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
 // not sure if maxy and x should be pointers we can optimize later
 void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
+void changeCell(int* y, int* x); // not sure if all methods should be declared up here im putting this here for now
+// maybe we should move all game of life logic related methods to gameLogic.h and gameLogic.c or something
 int main() {
 	WINDOW *gameWindow;
 	int startx, starty, width, height; // gameWindow properties
@@ -50,6 +53,9 @@ int main() {
 
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
+		if(ch = 'e') { // we will use e as an edit key (cycles dead or alive on cells)
+			changeCell(*curry, *currx);
+		}
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
@@ -116,7 +122,7 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
             break;
           case 'k': // (up)
 	    if(*curry > 1) {
-            	*curry = *curry-1;
+            	*curry = *curuy-1;
 	    }
             break;
           case 'j': // (down)
@@ -125,4 +131,9 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 	    }
             break;
 	}
+}
+
+void changeCell(int *y, int, *x) {
+			
+	return;
 }
