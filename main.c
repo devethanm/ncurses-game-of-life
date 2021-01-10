@@ -1,8 +1,8 @@
 // The Game of Life, written using ncurses
 
 /* TODO
- * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program star
- * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch 
+ * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
+ * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch statement 
 */
 
 // ncurses.h includes stdio.h
@@ -15,6 +15,7 @@ void destroy_win(WINDOW *local_win);
 void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
 void changeCell(int* y, int* x); // not sure if all methods should be declared up here im putting this here for now
 // maybe we should move all game of life logic related methods to gameLogic.h and gameLogic.c or something
+
 int main() {
 	WINDOW *gameWindow;
 	int startx, starty, width, height; // gameWindow properties
@@ -42,7 +43,7 @@ int main() {
 	// creating gameWindow and its properties
 	height = LINES - 4; // subtract 4 to compensate for the 3 lines we printed above the game window
 	width = COLS;
-	starty = (LINES - height) / 2;
+	starty = (LINES - height) / 2 + 1;
 	startx = (COLS - width) / 2;
 	gameWindow = create_newwin(height, width, starty, startx);
 	getmaxyx(gameWindow, gameRow, gameCol); // get rows and columns of gameWindow
@@ -51,8 +52,18 @@ int main() {
 	wmove(gameWindow, curry, currx); // set init cursor position to middle of gameWindow
 	refresh();
 
-	mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
+	// mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
 	wrefresh(gameWindow);
+	
+	// filling gameWindow with dead cells, represented by *
+	for(int i = 0; i < gameRow; i++) {
+		for(int j = 0; j < gameCol; j++) {
+			mvwprintw(gameWindow, i, j, "%c", '*');
+		}
+	}
+	wrefresh(gameWindow);
+	
+
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
 
