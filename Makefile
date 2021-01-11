@@ -1,6 +1,6 @@
 CC=gcc
-FILES=main.c
-#FILES2 = main.h
+FILES=main.c gameLogic.c
+#FILES2 = main.h 
 OUT_EXE = main.o
 all: $(FILES)
 	$(CC) -o $(OUT_EXE) $(FILES) -lncurses

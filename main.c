@@ -9,14 +9,16 @@
 // ncurses.h includes stdio.h
 #include <ncurses.h>
 #include <string.h>
+#include <stdio.h>
+#include "gameLogic.h"
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
 // not sure if maxy and x should be pointers we can optimize later
-void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
-void changeCell(int* y, int* x); // not sure if all methods should be declared up here im putting this here for now
-// maybe we should move all game of life logic related methods to gameLogic.h and gameLogic.c or something
+
 MEVENT event; // for mouse events
+// void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
+
 
 int main() {
 	WINDOW *gameWindow;
@@ -27,7 +29,9 @@ int main() {
 	char exitMessage[] = "Press 'q' to quit";
 	int row, col; // the stdscr window's rows and columns
 	int gameRow, gameCol; // the game window's rows and columns
-	int ch; // stores user char input from getch()	
+	int ch; // stores user char input from getch()
+
+
 
 	// init functions
 	initscr();
@@ -55,7 +59,9 @@ int main() {
 	refresh();
 
 	// mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
-	
+
+	wrefresh(gameWindow);
+
 	// filling gameWindow with dead cells, represented by *
 	for(int i = 0; i < gameRow; i++) {
 		for(int j = 0; j < gameCol; j++) {
@@ -66,6 +72,7 @@ int main() {
 	
 	mousemask(ALL_MOUSE_EVENTS, NULL); // get all mouse event 
 
+	int gameCount = 0;
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
@@ -94,9 +101,16 @@ int main() {
 				}
 			}
 		}
+
+		if (ch == '\n'){								// Stops user input if enter is pressed.
+			break;										// (if wanted we can change this)
+		}
 	}
 	
+	gameCount = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will
+														// update the gameWindow based on gameLogic.
 	endwin();
+	printf("%d", gameCount);
 	return 0;
 }
 
@@ -115,70 +129,4 @@ void destroy_win(WINDOW *local_win) {
 	wborder(local_win, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 	wrefresh(local_win);
 	delwin(local_win);
-}
-
-// Use pointers to update current x,y
-// not sure if maxy and x should be pointers we can optimize later
-void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
-	        
-	switch (ch) {
-		
-	// ARROW KEYS
-    	case KEY_LEFT:
-    		if(*currx > 1) {
-    			*currx = *currx-1;
-		}
-		break;
-        case KEY_RIGHT:
-		if(*currx < maxx - 2) {
-			*currx = *currx+1;
-		}
-		break;
-        case KEY_UP:
-        	if(*curry > 1) {
-	            *curry = *curry-1;
-	        }
-	        break;
-        case KEY_DOWN:
-        	if(*curry < maxy - 2) {
-	            *curry = *curry+1;
-		}
-		break;
-
-	// VIM KEYS
-	case 'h': // (left)
-		if(*currx > 1) {
-			*currx = *currx-1;
-		}
-	        break;
-	case 'l': // (right)
-		if(*currx < maxx - 2) {
-			*currx = *currx+1;
-		}
-	        break;
-	case 'k': // (up)
-		if(*curry > 1) {
-			*curry = *curry-1;
-		}
-	        break;
-	case 'j': // (down)
-		if(*curry < maxy - 2) {
-			*curry = *curry+1;
-		}
-	        break;
-		
-	// MOUSE EVENTS
-	case KEY_MOUSE:
-		if(getmouse(&event) == OK) {
-			if(event.bstate & BUTTON1_PRESSED) {
-				*curry = event.y; // mouse y when clicked
-				*currx = event.x; // mouse x when clicked
-			}
-		}
-	}
-}
-
-
-void changeCell(int *y, int *x) {
-		return;
 }
