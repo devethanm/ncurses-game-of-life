@@ -14,11 +14,8 @@
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
-// not sure if maxy and x should be pointers we can optimize later
 
 MEVENT event; // for mouse events
-// void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
-
 
 int main() {
 	WINDOW *gameWindow;
@@ -35,7 +32,7 @@ int main() {
 
 	// init functions
 	initscr();
-	keypad(stdscr, TRUE);
+	keypad(stdscr, TRUE);      
 	noecho();
 	// cbreak(); // line buffering disabled
 	getmaxyx(stdscr, row, col); // get rows and columns of stdscr window
@@ -57,9 +54,6 @@ int main() {
 	int currx = gameCol / 2;
 	wmove(gameWindow, curry, currx); // set init cursor position to middle of gameWindow
 	refresh();
-
-	// mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
-
 	wrefresh(gameWindow);
 
 	// filling gameWindow with dead cells, represented by *
@@ -72,14 +66,14 @@ int main() {
 	
 	mousemask(ALL_MOUSE_EVENTS, NULL); // get all mouse event 
 
-	int gameCount = 0;
+	int turns = 0;
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
 
-		if (ch == 'e') {
+		if (ch == 'e' || ch == KEY_MOUSE) {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
 			}
@@ -88,29 +82,16 @@ int main() {
 			}
 			wrefresh(gameWindow);
 		}
-		if (ch == KEY_MOUSE) {
-			if(getmouse(&event) == OK) {
-				if(event.bstate & BUTTON1_PRESSED) {
-					if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
-						wprintw(gameWindow,"%c",'@');
-					}
-					else {
-						wprintw(gameWindow,"%c",'*');
-					}
-					wrefresh(gameWindow);
-				}
-			}
-		}
 
 		if (ch == '\n'){								// Stops user input if enter is pressed.
 			break;										// (if wanted we can change this)
 		}
 	}
 	
-	gameCount = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will
-														// update the gameWindow based on gameLogic.
+	turns = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will
+													// update the gameWindow based on gameLogic.
 	endwin();
-	printf("%d", gameCount);
+	printf("%d", turns);
 	return 0;
 }
 

@@ -64,11 +64,12 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
         // MOUSE EVENTS
 		case KEY_MOUSE:
 			if(getmouse(&event) == OK) {
-				if(event.bstate & BUTTON1_PRESSED) {
-					*curry = event.y; // mouse y when clicked
+				if(event.bstate & BUTTON1_CLICKED) {
+					*curry = event.y-3; // mouse y when clicked
 					*currx = event.x; // mouse x when clicked
 				}
 			}
+			break;
 	}
 }
 
