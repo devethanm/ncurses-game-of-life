@@ -3,6 +3,7 @@
 /* TODO
  * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
  * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch statement 
+ * Fix the cursor so that after you press e to active a cell, it stays on the cell - this is a weird visual bug im not sur if its happening for you
 */
 
 // ncurses.h includes stdio.h
@@ -15,6 +16,7 @@ void destroy_win(WINDOW *local_win);
 void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
 void changeCell(int* y, int* x); // not sure if all methods should be declared up here im putting this here for now
 // maybe we should move all game of life logic related methods to gameLogic.h and gameLogic.c or something
+MEVENT event; // for mouse events
 
 int main() {
 	WINDOW *gameWindow;
@@ -53,7 +55,6 @@ int main() {
 	refresh();
 
 	// mvwprintw(gameWindow,2,3,"%c",'*');	// CAN BE REMOVED LATER! adds star to window at 3,2
-	wrefresh(gameWindow);
 	
 	// filling gameWindow with dead cells, represented by *
 	for(int i = 0; i < gameRow; i++) {
@@ -63,22 +64,35 @@ int main() {
 	}
 	wrefresh(gameWindow);
 	
+	mousemask(ALL_MOUSE_EVENTS, NULL); // get all mouse event 
 
 	// game loop (press q to quit)
 	while((ch = getch()) != 'q') {
-
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
-		if (((winch(gameWindow) & A_CHARTEXT) == '*')){	// This checks if there is a specific thing at cursor
-														// and changes it if it is found
-			if (ch == 'e')
-			{
-				changeCell(&curry,&currx);
+
+		if (ch == 'e') {
+			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
-				wrefresh(gameWindow);
 			}
-			
+			else {
+				wprintw(gameWindow,"%c",'*');
+			}
+			wrefresh(gameWindow);
+		}
+		if (ch == KEY_MOUSE) {
+			if(getmouse(&event) == OK) {
+				if(event.bstate & BUTTON1_PRESSED) {
+					if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
+						wprintw(gameWindow,"%c",'@');
+					}
+					else {
+						wprintw(gameWindow,"%c",'*');
+					}
+					wrefresh(gameWindow);
+				}
+			}
 		}
 	}
 	
@@ -107,18 +121,19 @@ void destroy_win(WINDOW *local_win) {
 // not sure if maxy and x should be pointers we can optimize later
 void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 	        
-	switch (ch){
+	switch (ch) {
+		
 	// ARROW KEYS
     	case KEY_LEFT:
     		if(*currx > 1) {
     			*currx = *currx-1;
-			}
-		   	break;
+		}
+		break;
         case KEY_RIGHT:
-			if(*currx < maxx - 2) {
-				*currx = *currx+1;
-			}
-		    break;
+		if(*currx < maxx - 2) {
+			*currx = *currx+1;
+		}
+		break;
         case KEY_UP:
         	if(*curry > 1) {
 	            *curry = *curry-1;
@@ -127,32 +142,42 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
         case KEY_DOWN:
         	if(*curry < maxy - 2) {
 	            *curry = *curry+1;
-		    }
-		    break;
+		}
+		break;
 
-		  // VIM KEYS
-	        case 'h': // (left)
-			    if(*currx > 1) {
-		            	*currx = *currx-1;
-			    }
-	            break;
-	        case 'l': // (right)
-			    if(*currx < maxx - 2) {
-		            	*currx = *currx+1;
-			    }
-	            break;
-	        case 'k': // (up)
-			    if(*curry > 1) {
-		            	*curry = *curry-1;
-			    }
-	            break;
-	        case 'j': // (down)
-			    if(*curry < maxy - 2) {
-		            	*curry = *curry+1;
-			    }
-	            break;
+	// VIM KEYS
+	case 'h': // (left)
+		if(*currx > 1) {
+			*currx = *currx-1;
+		}
+	        break;
+	case 'l': // (right)
+		if(*currx < maxx - 2) {
+			*currx = *currx+1;
+		}
+	        break;
+	case 'k': // (up)
+		if(*curry > 1) {
+			*curry = *curry-1;
+		}
+	        break;
+	case 'j': // (down)
+		if(*curry < maxy - 2) {
+			*curry = *curry+1;
+		}
+	        break;
+		
+	// MOUSE EVENTS
+	case KEY_MOUSE:
+		if(getmouse(&event) == OK) {
+			if(event.bstate & BUTTON1_PRESSED) {
+				*curry = event.y; // mouse y when clicked
+				*currx = event.x; // mouse x when clicked
+			}
+		}
 	}
 }
+
 
 void changeCell(int *y, int *x) {
 		return;
