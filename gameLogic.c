@@ -108,16 +108,13 @@ int runGame(WINDOW *gameWindow, int gameRow, int gameCol){
 		{
 			return -1;
 		}
-<<<<<<< HEAD
 		usleep(100000);
-=======
 		if (wgetch(gameWindow)=='q')
 		{
 			nodelay(gameWindow,FALSE);
 			return turns;
 		}
 		usleep(1000000);
->>>>>>> 300afd09da7fe1a1aa501a9b1f8e0833bf631946
 		turns = turns + 1;
 		//=================
 	}
