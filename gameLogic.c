@@ -21,13 +21,13 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
     	case KEY_LEFT:
     		if(*currx > 1) {
     			*currx = *currx-1;
-			}
-		   	break;
+		}
+		break;
         case KEY_RIGHT:
-			if(*currx < maxx - 2) {
-				*currx = *currx+1;
-			}
-		    break;
+		if(*currx < maxx - 2) {
+			*currx = *currx+1;
+		}
+		break;
         case KEY_UP:
         	if(*curry > 1) {
 	            *curry = *curry-1;
@@ -36,8 +36,8 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
         case KEY_DOWN:
         	if(*curry < maxy - 2) {
 	            *curry = *curry+1;
-		    }
-		    break;
+		}
+		break;
 
 	  // VIM KEYS
         case 'h': // (left)
@@ -108,7 +108,7 @@ int runGame(WINDOW *gameWindow, int gameRow, int gameCol){
 		{
 			return -1;
 		}
-		usleep(1000000);
+		usleep(100000);
 		turns = turns + 1;
 		//=================
 	}

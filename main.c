@@ -67,8 +67,8 @@ int main() {
 	mousemask(ALL_MOUSE_EVENTS, NULL); // get all mouse event 
 
 	int turns = 0;
-	// game loop (press q to quit)
-	while((ch = getch()) != 'q') {
+	// game loop (press enter to begin the game)
+	while((ch = getch()) != '\n') {
 		changeYX(ch,&curry,&currx, gameRow, gameCol);
 		wmove(gameWindow, curry, currx);
 		wrefresh(gameWindow);
@@ -83,15 +83,18 @@ int main() {
 			wrefresh(gameWindow);
 		}
 
-		if (ch == '\n'){								// Stops user input if enter is pressed.
-			break;										// (if wanted we can change this)
+		// press q to exit program
+		if (ch == 'q'){								// Stops user input if enter is pressed.
+			endwin();
+			printf("program aborted before game start \n");
+			return 0;								// (if wanted we can change this)
 		}
 	}
-	
-	turns = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will
-													// update the gameWindow based on gameLogic.
+
+	turns = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
 	endwin();
-	printf("%d", turns);
+	printf("total turns = %d \n", turns);
+	printf("program aborted \n");
 	return 0;
 }
 
