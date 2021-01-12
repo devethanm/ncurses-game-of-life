@@ -96,7 +96,7 @@ bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol){
 // I currently have code that just stops it after 3 turns(to be changed later)
 int runGame(WINDOW *gameWindow, int gameRow, int gameCol){
 	int turns = 0;
-
+	nodelay(gameWindow,TRUE);
 	while(stillAlive(gameWindow, gameRow, gameCol)){
 		
 		// update window based on rules of the game.
@@ -107,6 +107,11 @@ int runGame(WINDOW *gameWindow, int gameRow, int gameCol){
 		if (turns == 50000)
 		{
 			return -1;
+		}
+		if (wgetch(gameWindow)=='q')
+		{
+			nodelay(gameWindow,FALSE);
+			return turns;
 		}
 		usleep(1000000);
 		turns = turns + 1;
