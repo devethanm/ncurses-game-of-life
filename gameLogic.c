@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <stdbool.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -81,8 +82,17 @@ void changeCell(int *y, int *x) {
 	// this method is used to change cells within the activeCells list from dead to alive, or alive to dead
 	return;
 }
+/*
+struct Cell {
+	int y;
+	int x; 
+	bool alive;
+	struct Cell* next;
+};
+typedef struct Cell cell_t;
+*/
 
-void addCells(int* y, int* x) {
+void addCells(int celly, int cellx) {
 	// This method is called when the user clicks/or pressed e to add a cell
 	// sends the x and y coordinates of the cell they were on
 	// then adds that cell and its neighbors to activeCells
@@ -101,11 +111,9 @@ void addCells(int* y, int* x) {
 		// struct Cell* c1 = (struct Cell*) malloc(sizeof(struct Cell));
 		
 		// below is what im trying to do but it throws errors im not sure how we are supposed to define new cells
-	
+		struct Cell c1 = { celly, cellx, true, NULL };		
 				
-		// struct Cell c1;
-		// c1.y = y; c1.x = x;
-		// printf("%d\n", c1.y);	
+		printf("%d\n", c1.y);	
 	}
 }
 

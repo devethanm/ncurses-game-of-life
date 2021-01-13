@@ -1,5 +1,5 @@
 CC=gcc
-FILES=main.c gameLogic.c cell.c
+FILES=main.c gameLogic.c cell.c 
 #FILES2 = main.h 
 OUT_EXE = main.o
 all: $(FILES)

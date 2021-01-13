@@ -11,6 +11,7 @@
 // ncurses.h includes stdio.h
 #include <ncurses.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "gameLogic.h"
 #include "cell.h"
@@ -79,7 +80,7 @@ int main() {
 		if (ch == 'e' || ch == KEY_MOUSE) {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
-				addCells(&curry, &currx);
+				addCells(curry, currx);
 			}
 			else {
 				wprintw(gameWindow,"%c",'*');
