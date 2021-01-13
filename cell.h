@@ -6,12 +6,13 @@
 #include <string.h>
 #include <stdio.h>
 
-struct Cell{
-	int x;
+struct Cell {
 	int y;
+	int x;
 	bool alive;
-	char neighbours[8][8];
-	char name[];
+	struct Cell* next; // used to point to the next element in the linked list
+	// char neighbours[8][8];
+	//char name[];
 };
 
 void setCellYX(struct Cell *cel, int y, int x);

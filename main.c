@@ -4,6 +4,8 @@
  * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
  * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch statement 
  * Fix the cursor so that after you press e to active a cell, it stays on the cell - this is a weird visual bug im not sur if its happening for you
+ * Add 'c' to clear or something to reset the board
+ * add board presents like many game of life websites have
 */
 
 // ncurses.h includes stdio.h
@@ -11,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "gameLogic.h"
+#include "cell.h"
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
@@ -76,6 +79,7 @@ int main() {
 		if (ch == 'e' || ch == KEY_MOUSE) {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
+				addCells(&curry, &currx);
 			}
 			else {
 				wprintw(gameWindow,"%c",'*');

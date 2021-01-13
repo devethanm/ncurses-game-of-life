@@ -18,18 +18,20 @@ void setCellYX(struct Cell *cel, int y, int x){
 	cel->x = x;
 }
 
+/*
 void setCellName(struct Cell *cel){
 	char str[8];
 	sprintf(str, "%d,%d", cel->y,cel->x);
-	strcpy(cel->name, str);
+	//strcpy(cel->name, str);
 }
 
 void addNeighbours(struct Cell *cel, char nbrs[8][8]){
 	for (int i = 0; i < 8; ++i)
 	{
-		strcpy(cel->neighbours[i], nbrs[i]);
+		// strcpy(cel->neighbours[i], nbrs[i]);
 	}
 }
+*/
 
 /* HOW TO USE CELLS W/ FUNCTIONS
 
@@ -51,3 +53,4 @@ void addNeighbours(struct Cell *cel, char nbrs[8][8]){
 	setCellName(dummyCell);
 	addNeighbours(dummyCell,nbrs);
 */
+
