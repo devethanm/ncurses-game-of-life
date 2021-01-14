@@ -8,6 +8,6 @@ void changeCell(struct Cell* cel);
 void printList();
 struct Cell* createNewCell(int celly, int cellx, bool alive);
 void addCells(int celly, int cellx, int maxy, int maxx);
-bool stillAlive(WINDOW *local_win, int gameRow, int gameCol);
-int runGame(WINDOW *local_win, int gameRow, int gameCol);
+bool stillAlive(WINDOW *local_win, int gameRow, int gameCol, struct Cell* head);
+int runGame(WINDOW *local_win, int gameRow, int gameCol, struct Cell* head);
 #endif // SUDOKU_HZ

@@ -102,7 +102,7 @@ int main() {
 							curry, currx-1, curry, currx, curry, currx+1,
 							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
 
-					for(int i = 0; i < 8; i++) {
+					for(int i = 0; i < 8; i+=2) {
 						temp = createNewCell(list[i], list[i+1], DEAD); 
 						tail->next = temp;
 						tail = temp;						
@@ -111,7 +111,7 @@ int main() {
 					temp = head;
 
 					while(temp != NULL) {
-						printf("%d - X, %d - Y\n", temp->x, temp->y);
+						//printf("%d - X, %d - Y\n", temp->x, temp->y);
 						temp = temp->next;
 					}		
 
@@ -132,7 +132,7 @@ int main() {
 		}
 	}
 
-	turns = runGame(gameWindow, gameRow, gameCol); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
+	turns = runGame(gameWindow, gameRow, gameCol, head); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
 	endwin();
 	printf("total turns = %d \n", turns);
 	printf("program aborted \n");

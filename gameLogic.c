@@ -149,30 +149,30 @@ void addCells(int celly, int cellx, int maxy, int maxx) {
 */
 
 // This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
-bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol){
-	for(int i = 0; i < gameRow; i++) {
-		for(int j = 0; j < gameCol; j++) {
+bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
+	
+	int x = 10;
+	while(x > 0) {
+		return ALIVE;
+		x--;
+	}	
 
-			wmove(gameWindow,i,j);
-			if (((winch(gameWindow) & A_CHARTEXT) == '@')){
-				wprintw(gameWindow,"%c",'*');
-				wrefresh(gameWindow);
-				return ALIVE;
-			}
-		}
-	}
 	return DEAD;
 }
 // This is where the game changes based on the Rules of life.
 // I currently have code that just stops it after 3 turns(to be changed later)
-int runGame(WINDOW *gameWindow, int gameRow, int gameCol){
+int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
 	int turns = 0;
 	nodelay(gameWindow,TRUE);
-	while(stillAlive(gameWindow, gameRow, gameCol)){
+	while(stillAlive(gameWindow, gameRow, gameCol, front)){
 		
 		// update window based on rules of the game.
+		struct Cell* temp = front;
 
-
+		while(temp != NULL) {
+			printf("%d \n THIS IS STILL ALIVE METHOD", temp->x);
+			temp = temp->next;	
+		}
 
 		//filler code for now.
 		if (turns == 50000)
