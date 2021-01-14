@@ -6,6 +6,9 @@
 #include <string.h>
 #include <stdio.h>
 
+extern const bool ALIVE;
+extern const bool DEAD;
+
 struct Cell {
 	int y;
 	int x;

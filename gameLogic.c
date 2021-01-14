@@ -9,7 +9,6 @@
 
 const bool ALIVE = true;
 const bool DEAD = false;
-struct Cell* head = NULL; // global variable for the head of the linked list of cells
 // head is set to NULL at first, and is then assigned the address of the first cell that is added by the user
 // see addCells method
 
@@ -77,31 +76,56 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 			break;
 	}
 }
+/*
+void printList() {
+	//printf("%d - PRINT HEAD\n", head->next);
+	struct Cell* temp = head;
+	temp = temp->next;
+	//printf("%d  PRINT TEMP\n", temp->next);
+	while(temp->next != NULL) {
+		printf("IN THE LOOP \n");
+		// printf("%d - ", temp->x);
+		// temp = temp->next;
+		return;
+	}
+}
 
-void changeCell(int *y, int *x) {
+void changeCell(struct Cell *cel) {
 	// this method is used to change cells within the activeCells list from dead to alive, or alive to dead
 	return;
 }
-/*
-struct Cell {
-	int y;
-	int x; 
-	bool alive;
-	struct Cell* next;
-};
-typedef struct Cell cell_t;
 */
+struct Cell* createNewCell(int celly, int cellx, bool alive) {
+	struct Cell* ret = malloc(sizeof(struct Cell));
+	ret->y = celly;
+	ret->x = cellx;
+	ret->alive = alive;
+	return ret;
+}
 
-void addCells(int celly, int cellx) {
+/*
+void addCells(int celly, int cellx, int maxy, int maxx) {
 	// This method is called when the user clicks/or pressed e to add a cell
 	// sends the x and y coordinates of the cell they were on
 	// then adds that cell and its neighbors to activeCells
 	// however, only the cell they selected will be alive
 	
 	if(head != NULL) {
-		// if head is = NULL, then we know this is the first cell being added,
-		// and we don't have to make sure its neighbors aren't already in the list
+		// this method if statement is reached the second time a user clicks
+		// on a cell, here we have to loop through existing cells to make sure 
+		// we dont add duplicate cells.
+		// additionally, we will check if the cell they clicked is already apart of our linked list
+		// if it is in the list, and its dead, then all we need to do is changeCell() and make it alive
+		
+		// struct Cell* firstdCell = head->next;	
+		//struct Cell* temp = head;
 
+		// printList();
+
+		// while(temp != NULL) {
+		// 	temp = temp->next;	
+		// }
+			
 	}
 	else {
 		// the first time a user clicks on a cell, we have to add a total of 9 cells to the list
@@ -111,11 +135,18 @@ void addCells(int celly, int cellx) {
 		// struct Cell* c1 = (struct Cell*) malloc(sizeof(struct Cell));
 		
 		// below is what im trying to do but it throws errors im not sure how we are supposed to define new cells
-		struct Cell c1 = { celly, cellx, true, NULL };		
-				
-		printf("%d\n", c1.y);	
+		
+		// we will just add all cells no matter if the user clicked on an edge for now
+		// we can add checks to delete cells that have gone outside of the gameWindow later
+		
+		//struct Cell c1 = { celly, cellx, true, NULL }; // middle cell	
+
+		// linking all cells
+		// head = &c1;
+		// c1.next = &c2;
 	}
 }
+*/
 
 // This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
 bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol){

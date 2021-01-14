@@ -1,5 +1,4 @@
-// The Game of Life, written using ncurses
-
+// The Game of Life, written using ncurses 
 /* TODO
  * Make it so that the cursor appears in the gameWindow instead of on the bottom line on program start
  * Fix game windows borders (width and height) it is a little bit off, and i compensated for this in the changeYX method switch statement 
@@ -15,6 +14,9 @@
 #include <stdio.h>
 #include "gameLogic.h"
 #include "cell.h"
+
+struct Cell* head = NULL;
+struct Cell* tail = NULL;
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 void destroy_win(WINDOW *local_win);
@@ -49,7 +51,7 @@ int main() {
 
 	// creating gameWindow and its properties
 	height = LINES - 4; // subtract 4 to compensate for the 3 lines we printed above the game window
-	width = COLS;
+	width = COLS - 2;
 	starty = (LINES - height) / 2 + 1;
 	startx = (COLS - width) / 2;
 	gameWindow = create_newwin(height, width, starty, startx);
@@ -80,7 +82,41 @@ int main() {
 		if (ch == 'e' || ch == KEY_MOUSE) {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
-				addCells(curry, currx);
+				
+				if(head != NULL) {
+					
+					// this is where we check the linked list of cells
+					// go through list, see if the cell already exists
+					// then 1. is it alive? make it dead
+					// 2. is it dead? make it alive, add neighbors that don't exist
+					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
+
+				}
+				else {
+					struct Cell* temp;
+
+					temp = createNewCell(curry, currx, ALIVE); // making c1
+					head = temp;
+					tail = temp;	
+					int list[18] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
+							curry, currx-1, curry, currx, curry, currx+1,
+							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
+
+					for(int i = 0; i < 8; i++) {
+						temp = createNewCell(list[i], list[i+1], DEAD); 
+						tail->next = temp;
+						tail = temp;						
+					}
+
+					temp = head;
+
+					while(temp != NULL) {
+						printf("%d - X, %d - Y\n", temp->x, temp->y);
+						temp = temp->next;
+					}		
+
+				}
+
 			}
 			else {
 				wprintw(gameWindow,"%c",'*');
