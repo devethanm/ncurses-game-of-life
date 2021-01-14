@@ -95,23 +95,22 @@ int main() {
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
 						flipInList(head,temp);
-						//free(temp);
+						free(temp);
 					}else{
 						addToList(tail,temp);
 					}
 
+					// 2. is it dead? make it alive, add neighbors that don't exist
+					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
 					for(int i = 0; i < 8; i+=2) {
 
 						temp = createNewCell(list[i], list[i+1], DEAD); 
 						if(!inLinkedList(head,temp)){
 							addToList(tail,temp);
+						}else{
+							free(temp);
 						}
 					}
-
-					
-					// 2. is it dead? make it alive, add neighbors that don't exist
-					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
-
 				}
 				else {
 					struct Cell* temp;
