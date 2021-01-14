@@ -20,5 +20,5 @@ void setCellYX(struct Cell *cel, int y, int x);
 void setCellName(struct Cell *cel);
 void flipCell(struct Cell *cel);
 bool isAlive(struct Cell *cel);
-
+bool areEqual(struct Cell *cel1, struct Cell *cel2);
 #endif // SUDOKU_H

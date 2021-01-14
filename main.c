@@ -84,10 +84,15 @@ int main() {
 				wprintw(gameWindow,"%c",'@');
 				
 				if(head != NULL) {
-					
+					struct Cell* temp;
 					// this is where we check the linked list of cells
+					temp = createNewCell(curry, currx, ALIVE);
 					// go through list, see if the cell already exists
 					// then 1. is it alive? make it dead
+					if(inLinkedList(head,temp)){
+						flipInList(head,temp);
+					}
+					free(temp);
 					// 2. is it dead? make it alive, add neighbors that don't exist
 					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
 

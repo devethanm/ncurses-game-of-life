@@ -103,6 +103,29 @@ struct Cell* createNewCell(int celly, int cellx, bool alive) {
 	return ret;
 }
 
+bool inLinkedList(struct Cell* front, struct Cell* cel){
+	struct Cell* temp = front;
+	while(temp != NULL){
+		if (areEqual(temp, cel))
+		{
+			return true;
+		}
+		temp = temp->next;
+	}
+	return false;
+}
+
+bool flipInList(struct Cell* front, struct Cell* cel){
+	struct Cell* temp = front;
+	while(temp != NULL){
+		if (areEqual(temp, cel))
+		{
+			flipCell(temp);
+			break;
+		}
+	}
+}
+
 /*
 void addCells(int celly, int cellx, int maxy, int maxx) {
 	// This method is called when the user clicks/or pressed e to add a cell

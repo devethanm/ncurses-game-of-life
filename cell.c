@@ -18,6 +18,14 @@ void setCellYX(struct Cell *cel, int y, int x){
 	cel->x = x;
 }
 
+bool areEqual(struct Cell *cel1, struct Cell *cel2){
+
+	if (cel1->x == cel2->x && cel1->y == cel2->y){
+		return true;
+	}
+	return false;
+}
+
 /*
 void setCellName(struct Cell *cel){
 	char str[8];
