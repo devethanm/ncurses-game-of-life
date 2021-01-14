@@ -83,8 +83,8 @@ int main() {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
 
-				int list[18] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
-							curry, currx-1, curry, currx, curry, currx+1,
+				int list[16] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
+							curry, currx-1, curry, currx+1,
 							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
 
 				if(head != NULL) {
@@ -94,20 +94,31 @@ int main() {
 					// go through list, see if the cell already exists
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
+						printf("HELLO");
 						flipInList(head,temp);
 						free(temp);
 					}else{
-						addToList(tail,temp);
+						printf("ELSE");
+						// THESE TWO LINES ARE DOING WHAT ADD TO LIST SHOULD BE DOING
+						tail->next = temp;
+						tail = temp;
+						// addToList(tail,temp);
 					}
 
 					// 2. is it dead? make it alive, add neighbors that don't exist
 					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
-					for(int i = 0; i < 8; i+=2) {
+					for(int i = 0; i < 16; i+=2) {
 
 						temp = createNewCell(list[i], list[i+1], DEAD); 
 						if(!inLinkedList(head,temp)){
-							addToList(tail,temp);
+							// printf("NOT IN LINKED LIST     ");
+							// printf("%d - X, %d - Y                  ", temp->x, temp->y);
+							tail->next = temp;
+							tail = temp;
+							// addToList(tail,temp);
 						}else{
+							// printf("IN LINKED LIST (ELSE)     ");
+							// printf("%d - X, %d - Y                  ", temp->x, temp->y);
 							free(temp);
 						}
 					}
@@ -116,11 +127,13 @@ int main() {
 					struct Cell* temp;
 
 					temp = createNewCell(curry, currx, ALIVE); // making c1
+					printf("%d - X, %d - Y  THIS IS THE MIDDLE RIGHT HERE",temp->x, temp->y);
+					//printf("%d - X, %d - Y ", temp->x, temp->y);
 					head = temp;
 					tail = temp;	
 					
 
-					for(int i = 0; i < 8; i+=2) {
+					for(int i = 0; i < 16; i+=2) {
 						temp = createNewCell(list[i], list[i+1], DEAD); 
 						tail->next = temp;
 						tail = temp;						
@@ -129,7 +142,7 @@ int main() {
 					temp = head;
 
 					while(temp != NULL) {
-						//printf("%d - X, %d - Y\n", temp->x, temp->y);
+						// printf("%d - X, %d - Y     ", (temp->x) - 1, temp->y);
 						temp = temp->next;
 					}		
 

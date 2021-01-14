@@ -115,9 +115,9 @@ bool inLinkedList(struct Cell* front, struct Cell* cel){
 	return false;
 }
 
-void addToList(struct Cell* tail, struct Cell* cel){
-	tail->next = cel;
-	tail = cel;
+void addToList(struct Cell* back, struct Cell* cel){
+	back->next = cel;
+	back = cel;
 }
 
 bool flipInList(struct Cell* front, struct Cell* cel){
@@ -128,6 +128,7 @@ bool flipInList(struct Cell* front, struct Cell* cel){
 			flipCell(temp);
 			break;
 		}
+		temp = temp->next;
 	}
 }
 
@@ -198,7 +199,8 @@ int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
 		struct Cell* temp = front;
 
 		while(temp != NULL) {
-			// printf("%d \n THIS IS STILL ALIVE METHOD", temp->x);
+			printf("X = %d , Y = %d", temp->x, temp->y);
+			printf("    ");
 			temp = temp->next;	
 		}
 
