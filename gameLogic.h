@@ -11,5 +11,6 @@ bool inLinkedList(struct Cell* front, struct Cell* cel);
 bool flipInList(struct Cell* front, struct Cell* cel);
 void addCells(int celly, int cellx, int maxy, int maxx);
 bool stillAlive(WINDOW *local_win, int gameRow, int gameCol, struct Cell* head);
+void addToList(struct Cell* tail, struct Cell* cel);
 int runGame(WINDOW *local_win, int gameRow, int gameCol, struct Cell* head);
 #endif // SUDOKU_HZ

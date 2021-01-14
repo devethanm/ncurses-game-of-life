@@ -82,7 +82,11 @@ int main() {
 		if (ch == 'e' || ch == KEY_MOUSE) {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
-				
+
+				int list[18] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
+							curry, currx-1, curry, currx, curry, currx+1,
+							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
+
 				if(head != NULL) {
 					struct Cell* temp;
 					// this is where we check the linked list of cells
@@ -91,8 +95,20 @@ int main() {
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
 						flipInList(head,temp);
+						//free(temp);
+					}else{
+						addToList(tail,temp);
 					}
-					free(temp);
+
+					for(int i = 0; i < 8; i+=2) {
+
+						temp = createNewCell(list[i], list[i+1], DEAD); 
+						if(!inLinkedList(head,temp)){
+							addToList(tail,temp);
+						}
+					}
+
+					
 					// 2. is it dead? make it alive, add neighbors that don't exist
 					// 3. if it has no neighbors, add alive cell where the user clicked, and add all neighbors
 
@@ -103,9 +119,7 @@ int main() {
 					temp = createNewCell(curry, currx, ALIVE); // making c1
 					head = temp;
 					tail = temp;	
-					int list[18] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
-							curry, currx-1, curry, currx, curry, currx+1,
-							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
+					
 
 					for(int i = 0; i < 8; i+=2) {
 						temp = createNewCell(list[i], list[i+1], DEAD); 
