@@ -94,15 +94,13 @@ int main() {
 					// go through list, see if the cell already exists
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
-						printf("HELLO");
+						// printf("HELLO");
 						flipInList(head,temp);
 						free(temp);
 					}else{
-						printf("ELSE");
+						// printf("ELSE");
 						// THESE TWO LINES ARE DOING WHAT ADD TO LIST SHOULD BE DOING
-						tail->next = temp;
-						tail = temp;
-						// addToList(tail,temp);
+						tail = addToList(tail,temp);
 					}
 
 					// 2. is it dead? make it alive, add neighbors that don't exist
@@ -112,13 +110,11 @@ int main() {
 						temp = createNewCell(list[i], list[i+1], DEAD); 
 						if(!inLinkedList(head,temp)){
 							// printf("NOT IN LINKED LIST     ");
-							// printf("%d - X, %d - Y                  ", temp->x, temp->y);
-							tail->next = temp;
-							tail = temp;
-							// addToList(tail,temp);
+							// printList(head);
+							tail = addToList(tail,temp);
 						}else{
 							// printf("IN LINKED LIST (ELSE)     ");
-							// printf("%d - X, %d - Y                  ", temp->x, temp->y);
+							// printList(head);
 							free(temp);
 						}
 					}
@@ -127,24 +123,18 @@ int main() {
 					struct Cell* temp;
 
 					temp = createNewCell(curry, currx, ALIVE); // making c1
-					printf("%d - X, %d - Y  THIS IS THE MIDDLE RIGHT HERE",temp->x, temp->y);
-					//printf("%d - X, %d - Y ", temp->x, temp->y);
+					// printf("%d - X, %d - Y  THIS IS THE MIDDLE RIGHT HERE",temp->x, temp->y);
 					head = temp;
 					tail = temp;	
 					
 
 					for(int i = 0; i < 16; i+=2) {
 						temp = createNewCell(list[i], list[i+1], DEAD); 
-						tail->next = temp;
-						tail = temp;						
+						tail = addToList(tail,temp);						
 					}
 
 					temp = head;
-
-					while(temp != NULL) {
-						// printf("%d - X, %d - Y     ", (temp->x) - 1, temp->y);
-						temp = temp->next;
-					}		
+					// printList(temp);		
 
 				}
 

@@ -76,21 +76,17 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 			break;
 	}
 }
-/*
-void printList() {
-	//printf("%d - PRINT HEAD\n", head->next);
-	struct Cell* temp = head;
-	temp = temp->next;
-	//printf("%d  PRINT TEMP\n", temp->next);
-	while(temp->next != NULL) {
-		printf("IN THE LOOP \n");
-		// printf("%d - ", temp->x);
-		// temp = temp->next;
-		return;
+
+void printList(struct Cell* cel) {
+	struct Cell* temp = cel;
+	while(temp != NULL) {
+		// printf("IN THE LOOP \n");
+		printf(" (x=%d - y=%d) ", temp->x, temp->y);
+		temp = temp->next;
 	}
 }
 
-void changeCell(struct Cell *cel) {
+/*void changeCell(struct Cell *cel) {
 	// this method is used to change cells within the activeCells list from dead to alive, or alive to dead
 	return;
 }
@@ -115,9 +111,9 @@ bool inLinkedList(struct Cell* front, struct Cell* cel){
 	return false;
 }
 
-void addToList(struct Cell* back, struct Cell* cel){
+struct Cell* addToList(struct Cell* back, struct Cell* cel){
 	back->next = cel;
-	back = cel;
+	return cel;
 }
 
 bool flipInList(struct Cell* front, struct Cell* cel){
@@ -131,6 +127,52 @@ bool flipInList(struct Cell* front, struct Cell* cel){
 		temp = temp->next;
 	}
 }
+
+
+// This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
+bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
+	
+	int x = 10;
+	while(x > 0) {
+		return ALIVE;
+		x--;
+	}	
+
+	return DEAD;
+}
+// This is where the game changes based on the Rules of life.
+// I currently have code that just stops it after 3 turns(to be changed later)
+int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
+	int turns = 0;
+	nodelay(gameWindow,TRUE);
+	while(stillAlive(gameWindow, gameRow, gameCol, front)){
+		
+		// update window based on rules of the game.
+		// Any live cell with two or three live neighbours survives.
+    	// Any dead cell with three live neighbours becomes a live cell.
+    	// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+
+
+		//filler code for now.
+		if (turns == 50000)
+		{
+			return -1;
+		}
+		usleep(100000);
+		if (wgetch(gameWindow)=='q')
+		{
+			printList(front);
+			nodelay(gameWindow,FALSE);
+			return turns;
+		}
+		usleep(100000);
+		turns = turns + 1;
+		//=================
+	}
+	return turns;
+}
+
+
 
 /*
 void addCells(int celly, int cellx, int maxy, int maxx) {
@@ -176,48 +218,3 @@ void addCells(int celly, int cellx, int maxy, int maxx) {
 	}
 }
 */
-
-// This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
-bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
-	
-	int x = 10;
-	while(x > 0) {
-		return ALIVE;
-		x--;
-	}	
-
-	return DEAD;
-}
-// This is where the game changes based on the Rules of life.
-// I currently have code that just stops it after 3 turns(to be changed later)
-int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
-	int turns = 0;
-	nodelay(gameWindow,TRUE);
-	while(stillAlive(gameWindow, gameRow, gameCol, front)){
-		
-		// update window based on rules of the game.
-		struct Cell* temp = front;
-
-		while(temp != NULL) {
-			printf("X = %d , Y = %d", temp->x, temp->y);
-			printf("    ");
-			temp = temp->next;	
-		}
-
-		//filler code for now.
-		if (turns == 50000)
-		{
-			return -1;
-		}
-		usleep(100000);
-		if (wgetch(gameWindow)=='q')
-		{
-			nodelay(gameWindow,FALSE);
-			return turns;
-		}
-		usleep(100000);
-		turns = turns + 1;
-		//=================
-	}
-	return turns;
-}
