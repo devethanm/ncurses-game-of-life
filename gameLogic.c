@@ -130,13 +130,16 @@ bool flipInList(struct Cell* front, struct Cell* cel){
 
 
 // This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
-bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
+bool stillAlive(struct Cell* front) {
 	
-	int x = 10;
-	while(x > 0) {
-		return ALIVE;
-		x--;
-	}	
+	struct Cell* temp = front;
+	while(temp != NULL){
+		if (isAlive(temp))
+		{
+			return ALIVE;
+		}
+		temp = temp->next;
+	}
 
 	return DEAD;
 }
@@ -145,7 +148,23 @@ bool stillAlive(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front
 int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
 	int turns = 0;
 	nodelay(gameWindow,TRUE);
-	while(stillAlive(gameWindow, gameRow, gameCol, front)){
+
+	while(stillAlive(front)){
+		struct Cell* temp = front;
+
+		while(temp != NULL){
+			int currx = temp->x;
+			int curry = temp->y;
+			int list[16] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
+							curry, currx-1, curry, currx+1,
+							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
+
+			if (isAlive(temp))
+			{
+				return ALIVE;
+			}
+			temp = temp->next;
+		}
 		
 		// update window based on rules of the game.
 		// Any live cell with two or three live neighbours survives.
@@ -154,21 +173,22 @@ int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
 
 
 		//filler code for now.
-		if (turns == 50000)
-		{
-			return -1;
-		}
+		// if (turns == 50000)
+		// {
+		// 	return -1;
+		// }
 		usleep(100000);
+
 		if (wgetch(gameWindow)=='q')
 		{
-			printList(front);
-			nodelay(gameWindow,FALSE);
-			return turns;
+			break;
 		}
 		usleep(100000);
 		turns = turns + 1;
 		//=================
 	}
+	nodelay(gameWindow,FALSE);
+	printList(front);
 	return turns;
 }
 
