@@ -96,6 +96,7 @@ struct Cell* createNewCell(int celly, int cellx, bool alive) {
 	ret->y = celly;
 	ret->x = cellx;
 	ret->alive = alive;
+	ret->shouldDie = false;
 	return ret;
 }
 
@@ -151,24 +152,32 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 
 	while(stillAlive(front)) {
 		struct Cell* temp = front;
+		struct Cell* tempLook = front;
 
 		// update window based on rules of the game.
 		// Any live cell with two or three live neighbours survives.
 		while(temp != NULL) {
-			int list[16] = {temp->y-1, temp->x-1, temp->y-1, temp->y-1, temp->x+1, 
-							temp->y, temp->x-1, temp->y, temp->x+1,
-							temp->y+1, temp->x-1, temp->y+1, temp->x, 
-							temp->y+1, temp->x+1};
+			int list[16] = {temp->y-1, temp->x-1, temp->y-1, temp->x, 
+				temp->y-1, temp->x+1, temp->y, temp->x-1, 
+				temp->y, temp->x+1, temp->y+1, temp->x-1, 
+				temp->y+1, temp->x, temp->y+1, temp->x+1};
 
 			int count = 0; // counts how many live neighbors a cell has
 			if(temp->alive) {
 				 for(int i = 0; i < 16; i+=2) {
 				 	struct Cell* tempCheck;
 					tempCheck = createNewCell(list[i], list[i+1], DEAD);
+
+					while(tempLook != NULL) {
+						if(areEqual(tempLook, tempCheck)) {
+							tempCheck->alive = tempLook->alive;
+						}	
+						tempLook = tempLook->next;
+					}
+
 					if(!inLinkedList(front,tempCheck)){
 						// NOT IN LINKED LIST
-						back = addToList(back,temp);
-						// free(tempCheck);
+						// back = addToList(back,tempCheck);
 					}else{
 						// IN LINKED LIST
 						if(tempCheck->alive) { // dont need to check tempcheck alive its always alive... ?
@@ -182,9 +191,15 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 					// }
 				}
 				
-				if(count != 2 || count != 3) {
-					flipCell(temp);
+				// THIS IF ELSE IS BROKEN
+
+				if(count == 2 || count == 3) {
+					temp->shouldDie = true;
+				}
+				else {
+					temp->shouldDie = true;
 				}	
+				
 			}
 
 			temp = temp->next;
@@ -195,11 +210,15 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 
 		temp = front; // using front = temp over and over might cause a problem idk im guessing
 		while(temp != NULL) {
-			if(isAlive(temp)) {
-				mvwprintw(*gameWindow, temp->y, temp->x, "%c", '@');	
-			}
-			else {
-				mvwprintw(*gameWindow, temp->y, temp->x, "%c", '*');
+			if(temp->shouldDie){
+				flipCell(temp);
+				temp->shouldDie = false;
+				if(isAlive(temp)) {
+					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '@');	
+				}
+				else {
+					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '*');
+				}
 			}
 			temp = temp->next;
 		}			
