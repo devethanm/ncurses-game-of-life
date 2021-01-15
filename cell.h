@@ -13,6 +13,7 @@ struct Cell {
 	int y;
 	int x;
 	bool alive;
+	bool shouldDie;
 	struct Cell* next; // used to point to the next element in the linked list
 };
 

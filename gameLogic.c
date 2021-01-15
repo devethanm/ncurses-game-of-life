@@ -145,49 +145,76 @@ bool stillAlive(struct Cell* front) {
 }
 // This is where the game changes based on the Rules of life.
 // I currently have code that just stops it after 3 turns(to be changed later)
-int runGame(WINDOW *gameWindow, int gameRow, int gameCol, struct Cell* front) {
+int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 	int turns = 0;
-	nodelay(gameWindow,TRUE);
+	nodelay(*gameWindow,TRUE);
 
-	while(stillAlive(front)){
+	while(stillAlive(front)) {
 		struct Cell* temp = front;
 
-		while(temp != NULL){
-			int currx = temp->x;
-			int curry = temp->y;
-			int list[16] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
-							curry, currx-1, curry, currx+1,
-							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
-
-			if (isAlive(temp))
-			{
-				return ALIVE;
-			}
-			temp = temp->next;
-		}
-		
 		// update window based on rules of the game.
 		// Any live cell with two or three live neighbours survives.
-    	// Any dead cell with three live neighbours becomes a live cell.
-    	// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+		while(temp != NULL) {
+			int list[16] = {temp->y-1, temp->x-1, temp->y-1, temp->y-1, temp->x+1, 
+							temp->y, temp->x-1, temp->y, temp->x+1,
+							temp->y+1, temp->x-1, temp->y+1, temp->x, 
+							temp->y+1, temp->x+1};
+
+			int count = 0; // counts how many live neighbors a cell has
+			if(temp->alive) {
+				 for(int i = 0; i < 16; i+=2) {
+				 	struct Cell* tempCheck;
+					tempCheck = createNewCell(list[i], list[i+1], DEAD);
+					if(!inLinkedList(front,tempCheck)){
+						// NOT IN LINKED LIST
+						back = addToList(back,temp);
+						// free(tempCheck);
+					}else{
+						// IN LINKED LIST
+						if(tempCheck->alive) { // dont need to check tempcheck alive its always alive... ?
+							count++;
+						}
+					}
+					
+					// struct Cell* tempCheck = createNewCell(temp->y, temp->x-1, ALIVE);
+					// if(inLinkedList(front, tempCheck)) {
+					// 	count++;
+					// }
+				}
+				
+				if(count != 2 || count != 3) {
+					flipCell(temp);
+				}	
+			}
+
+			temp = temp->next;
+		}
+    		// Any dead cell with three live neighbours becomes a live cell.
+    		// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
 
-		//filler code for now.
-		// if (turns == 50000)
-		// {
-		// 	return -1;
-		// }
-		usleep(100000);
+		temp = front; // using front = temp over and over might cause a problem idk im guessing
+		while(temp != NULL) {
+			if(isAlive(temp)) {
+				mvwprintw(*gameWindow, temp->y, temp->x, "%c", '@');	
+			}
+			else {
+				mvwprintw(*gameWindow, temp->y, temp->x, "%c", '*');
+			}
+			temp = temp->next;
+		}			
+		
+		wrefresh(*gameWindow);
 
-		if (wgetch(gameWindow)=='q')
+		if (wgetch(*gameWindow)=='q')
 		{
 			break;
 		}
-		usleep(100000);
+		usleep(1000000);
 		turns = turns + 1;
 		//=================
 	}
-	nodelay(gameWindow,FALSE);
+	nodelay(*gameWindow,FALSE);
 	printList(front);
 	return turns;
 }

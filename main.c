@@ -94,12 +94,9 @@ int main() {
 					// go through list, see if the cell already exists
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
-						// printf("HELLO");
 						flipInList(head,temp);
 						free(temp);
 					}else{
-						// printf("ELSE");
-						// THESE TWO LINES ARE DOING WHAT ADD TO LIST SHOULD BE DOING
 						tail = addToList(tail,temp);
 					}
 
@@ -153,10 +150,10 @@ int main() {
 		}
 	}
 
-	turns = runGame(gameWindow, gameRow, gameCol, head); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
+	turns = runGame(&gameWindow, head, tail); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
 	endwin();
 	printf("total turns = %d \n", turns);
-	printf("program aborted \n");
+	// printf("program aborted \n");
 	return 0;
 }
 
