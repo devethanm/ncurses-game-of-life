@@ -83,9 +83,10 @@ int main() {
 			if(((winch(gameWindow) & A_CHARTEXT) == '*')) {
 				wprintw(gameWindow,"%c",'@');
 
-				int list[16] = {curry-1, currx-1, curry-1, currx, curry-1, currx+1, 
-							curry, currx-1, curry, currx+1,
-							curry+1, currx-1, curry+1, currx, curry+1, currx+1};
+				int list[16] = {curry-1, currx-1, curry-1, currx,
+								curry-1, currx+1, curry, currx-1,
+								curry, currx+1,	curry+1, currx-1,
+								curry+1, currx, curry+1, currx+1};
 
 				if(head != NULL) {
 					struct Cell* temp;
@@ -94,7 +95,7 @@ int main() {
 					// go through list, see if the cell already exists
 					// then 1. is it alive? make it dead
 					if(inLinkedList(head,temp)){
-						flipInList(head,temp);
+						head = flipInList(head,temp);
 						free(temp);
 					}else{
 						tail = addToList(tail,temp);

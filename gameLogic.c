@@ -117,7 +117,7 @@ struct Cell* addToList(struct Cell* back, struct Cell* cel){
 	return cel;
 }
 
-bool flipInList(struct Cell* front, struct Cell* cel){
+struct Cell* flipInList(struct Cell* front, struct Cell* cel){
 	struct Cell* temp = front;
 	while(temp != NULL){
 		if (areEqual(temp, cel))
@@ -127,6 +127,19 @@ bool flipInList(struct Cell* front, struct Cell* cel){
 		}
 		temp = temp->next;
 	}
+	return front;
+}
+
+bool aliveInList(struct Cell* front, struct Cell* cel){
+	struct Cell* temp = front;
+	while(temp != NULL){
+		if (areEqual(temp, cel))
+		{
+			return temp->alive;
+		}
+		temp = temp->next;
+	}
+	return false;
 }
 
 
@@ -152,59 +165,68 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 
 	while(stillAlive(front)) {
 		struct Cell* temp = front;
-		struct Cell* tempLook = front;
 
 		// update window based on rules of the game.
 		// Any live cell with two or three live neighbours survives.
 		while(temp != NULL) {
 			int list[16] = {temp->y-1, temp->x-1, temp->y-1, temp->x, 
-				temp->y-1, temp->x+1, temp->y, temp->x-1, 
-				temp->y, temp->x+1, temp->y+1, temp->x-1, 
-				temp->y+1, temp->x, temp->y+1, temp->x+1};
+							temp->y-1, temp->x+1, temp->y, temp->x-1, 
+							temp->y, temp->x+1, temp->y+1, temp->x-1, 
+							temp->y+1, temp->x, temp->y+1, temp->x+1};
 
 			int count = 0; // counts how many live neighbors a cell has
+
 			if(temp->alive) {
-				 for(int i = 0; i < 16; i+=2) {
-				 	struct Cell* tempCheck;
+				struct Cell* tempCheck;
+				for(int i = 0; i < 16; i+=2) {
+
 					tempCheck = createNewCell(list[i], list[i+1], DEAD);
-
-					while(tempLook != NULL) {
-						if(areEqual(tempLook, tempCheck)) {
-							tempCheck->alive = tempLook->alive;
-						}	
-						tempLook = tempLook->next;
-					}
-
+					
 					if(!inLinkedList(front,tempCheck)){
 						// NOT IN LINKED LIST
-						// back = addToList(back,tempCheck);
+						back = addToList(back, tempCheck);
+
 					}else{
-						// IN LINKED LIST
-						if(tempCheck->alive) { // dont need to check tempcheck alive its always alive... ?
+						// IN LINKED LIST and living
+						if(aliveInList(front,tempCheck)) { 
 							count++;
 						}
+						free(tempCheck);
 					}
-					
-					// struct Cell* tempCheck = createNewCell(temp->y, temp->x-1, ALIVE);
-					// if(inLinkedList(front, tempCheck)) {
-					// 	count++;
-					// }
+
 				}
-				
-				// THIS IF ELSE IS BROKEN
 
 				if(count == 2 || count == 3) {
-					temp->shouldDie = true;
+					printf("%d", count);
+				
+					temp->shouldDie = false;
 				}
 				else {
 					temp->shouldDie = true;
-				}	
-				
+				}
+
+			}else{
+				struct Cell* tempCheck;
+				for(int i = 0; i < 16; i+=2) {
+
+					tempCheck = createNewCell(list[i], list[i+1], DEAD);
+
+					if(aliveInList(front,tempCheck)) { 
+						count = count +1;
+					}
+					free(tempCheck);
+
+				}
+				// Any dead cell with three live neighbours becomes a live cell.
+				if(count == 3) {
+					temp->shouldDie = true;
+				}
 			}
+			
 
 			temp = temp->next;
 		}
-    		// Any dead cell with three live neighbours becomes a live cell.
+    		
     		// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
 
@@ -214,9 +236,11 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 				flipCell(temp);
 				temp->shouldDie = false;
 				if(isAlive(temp)) {
+					
 					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '@');	
 				}
 				else {
+					
 					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '*');
 				}
 			}
