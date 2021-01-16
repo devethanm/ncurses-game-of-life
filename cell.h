@@ -2,9 +2,6 @@
 #define CELL_H
 
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 extern const bool ALIVE;
 extern const bool DEAD;

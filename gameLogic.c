@@ -9,15 +9,12 @@
 
 const bool ALIVE = true;
 const bool DEAD = false;
-// head is set to NULL at first, and is then assigned the address of the first cell that is added by the user
-// see addCells method
+// head is set to NULL at first, and is then assigned the address of the first cell 
+// that is added by the user. see addCells method
 
 MEVENT event;
-// void changeYX(int ch, int* curry, int* currx, int maxy, int maxx);
-// void changeCell(int* y, int* x); // not sure if all methods should be declared up here im putting this here for now
-// maybe we should move all game of life logic related methods to gameLogic.h and gameLogic.c or something
+
 // Use pointers to update current x,y
-// not sure if maxy and x should be pointers we can optimize later
 void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 	        
 	switch (ch){
@@ -25,13 +22,13 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
     	case KEY_LEFT:
     		if(*currx > 1) {
     			*currx = *currx-1;
-		}
-		break;
+			}
+			break;
         case KEY_RIGHT:
-		if(*currx < maxx - 2) {
-			*currx = *currx+1;
-		}
-		break;
+			if(*currx < maxx - 2) {
+				*currx = *currx+1;
+			}
+			break;
         case KEY_UP:
         	if(*curry > 1) {
 	            *curry = *curry-1;
@@ -40,10 +37,10 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
         case KEY_DOWN:
         	if(*curry < maxy - 2) {
 	            *curry = *curry+1;
-		}
-		break;
+			}
+			break;
 
-	  // VIM KEYS
+	// VIM KEYS
         case 'h': // (left)
 		    if(*currx > 1) {
 	            	*currx = *currx-1;
@@ -65,7 +62,7 @@ void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 		    }
             break;
 
-        // MOUSE EVENTS
+    // MOUSE EVENTS
 		case KEY_MOUSE:
 			if(getmouse(&event) == OK) {
 				if(event.bstate & BUTTON1_CLICKED) {
@@ -86,11 +83,6 @@ void printList(struct Cell* cel) {
 	}
 }
 
-/*void changeCell(struct Cell *cel) {
-	// this method is used to change cells within the activeCells list from dead to alive, or alive to dead
-	return;
-}
-*/
 struct Cell* createNewCell(int celly, int cellx, bool alive) {
 	struct Cell* ret = malloc(sizeof(struct Cell));
 	ret->y = celly;
@@ -145,7 +137,6 @@ bool aliveInList(struct Cell* front, struct Cell* cel){
 
 // This checks to see if there is atleast 1 live cell, and returns DEAD if there isn't.
 bool stillAlive(struct Cell* front) {
-	
 	struct Cell* temp = front;
 	while(temp != NULL){
 		if (isAlive(temp))
@@ -154,7 +145,6 @@ bool stillAlive(struct Cell* front) {
 		}
 		temp = temp->next;
 	}
-
 	return DEAD;
 }
 // This is where the game changes based on the Rules of life.
@@ -176,26 +166,29 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 
 			int count = 0; // counts how many live neighbors a cell has
 
-			if(temp->alive) {
-				struct Cell* tempCheck;
-				for(int i = 0; i < 16; i+=2) {
+		
+			struct Cell* tempCheck;
+			for(int i = 0; i < 16; i+=2) {
 
-					tempCheck = createNewCell(list[i], list[i+1], DEAD);
-					
-					if(!inLinkedList(front,tempCheck)){
-						// NOT IN LINKED LIST
+				tempCheck = createNewCell(list[i], list[i+1], DEAD);
+				
+				if(!inLinkedList(front,tempCheck)){
+					// NOT IN LINKED LIST and living
+					if (isAlive(temp))
+					{
 						back = addToList(back, tempCheck);
-
-					}else{
-						// IN LINKED LIST and living
-						if(aliveInList(front,tempCheck)) { 
-							count++;
-						}
-						free(tempCheck);
 					}
-
+				}else{
+					// IN LINKED LIST
+					if(aliveInList(front,tempCheck)) { 
+						count++;
+					}
+					free(tempCheck);
 				}
 
+			}
+
+			if(isAlive(temp)) {
 				if(count == 2 || count == 3) {
 					printf("%d", count);
 				
@@ -206,18 +199,6 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 				}
 
 			}else{
-				struct Cell* tempCheck;
-				for(int i = 0; i < 16; i+=2) {
-
-					tempCheck = createNewCell(list[i], list[i+1], DEAD);
-
-					if(aliveInList(front,tempCheck)) { 
-						count = count +1;
-					}
-					free(tempCheck);
-
-				}
-				// Any dead cell with three live neighbours becomes a live cell.
 				if(count == 3) {
 					temp->shouldDie = true;
 				}
@@ -227,10 +208,11 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 			temp = temp->next;
 		}
     		
-    		// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+    		// All other live cells die in the next generation. 
+			// Similarly, all other dead cells stay dead.
 
 
-		temp = front; // using front = temp over and over might cause a problem idk im guessing
+		temp = front;
 		while(temp != NULL) {
 			if(temp->shouldDie){
 				flipCell(temp);
@@ -255,7 +237,7 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 		}
 		usleep(1000000);
 		turns = turns + 1;
-		//=================
+
 	}
 	nodelay(*gameWindow,FALSE);
 	printList(front);
