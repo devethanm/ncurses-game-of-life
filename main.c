@@ -9,6 +9,7 @@
 
 // ncurses.h includes stdio.h
 #include <ncurses.h>
+#include <menu.h> // menu library for ncurses
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,6 +24,12 @@ void destroy_win(WINDOW *local_win);
 void setupScreen();
 MEVENT event; // for mouse events
 
+char *choices[] = {
+			"Save Preset",
+			"Clear Board",
+			"Exit",
+		};
+
 int main() {
 	WINDOW *gameWindow;
 	int startx, starty, width, height; // gameWindow properties
@@ -32,9 +39,28 @@ int main() {
 
 	// init functions
 	initscr();
+	cbreak();
 	keypad(stdscr, TRUE);      
 	noecho();
-	// cbreak(); // line buffering disabled
+
+	// MENU DECLARATIONS
+	ITEM **items;
+	MENU *menu;
+	int numChoices;
+	ITEM *curItem;
+	
+	//MENU SETUP
+	numChoices = (sizeof(choices) / sizeof(choices[0]));
+	items = (ITEM**)calloc(numChoices+1, sizeof(ITEM *));
+
+	for(int i = 0; i < numChoices; i++) 
+		items[i] = new_item(choices[i], choices[i]);
+	items[numChoices] = (ITEM *)NULL;
+
+	menu = new_menu((ITEM**) items);
+	post_menu(menu);
+	refresh();
+
 	setupScreen();
 
 	// creating gameWindow and its properties
@@ -133,7 +159,11 @@ int main() {
 		}
 	}
 
+	curs_set(0); // makes the cursor invisible
 	turns = runGame(&gameWindow, head, tail); 	// This will "run" the game it will, update the gameWindow based on gameLogic.
+	free_item(items[0]);
+	free_item(items[1]);
+	free_menu(menu);
 	endwin();
 	printf("total turns = %d \n", turns);
 	// printf("program aborted \n");
@@ -142,8 +172,8 @@ int main() {
 
 void setupScreen(){
 	char title[] = "The Game of Life";
-	char instructions1[] = "Use vim or arrow keys to navigate to a cell, use enter to bring the cell to life";
-	char instructions2[] = "Will update this line of instructions later";
+	char instructions1[] = "Use vim or arrow keys to navigate & e to alter cells";
+	char instructions2[] = "Press enter to run";
 	char exitMessage[] = "Press 'q' to quit";
 	int row, col; // the stdscr window's rows and columns
 
