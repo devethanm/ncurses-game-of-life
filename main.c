@@ -42,6 +42,8 @@ int main() {
 	cbreak();
 	keypad(stdscr, TRUE);      
 	noecho();
+	start_color();					/* Initialize Color Pairs	*/
+	build_color_pairs();
 
 	// MENU DECLARATIONS
 	ITEM **items;
@@ -60,7 +62,24 @@ int main() {
 	menu = new_menu((ITEM**) items);
 	post_menu(menu);
 	refresh();
+	curry = -1;
+	while((ch = getch()) != KEY_F(1))
+	{   switch(ch)
+	    {	case KEY_DOWN:
+		        menu_driver(menu, REQ_DOWN_ITEM);
+				break;
+			case KEY_UP:
+				menu_driver(menu, REQ_UP_ITEM);
+				break;
+			case '\n': /* Enter */
+				curry = item_index(current_item(menu));  // can use curry to see what choice is
+				break;
+		}
 
+		if (curry != -1){break;}
+	}
+	unpost_menu(menu);
+	
 	setupScreen();
 
 	// creating gameWindow and its properties
@@ -184,6 +203,17 @@ void setupScreen(){
 	mvprintw(2, (col-strlen(instructions2))/2, "%s", instructions2); 
 	mvprintw(row-1, (col-strlen(exitMessage))/2, "%s", exitMessage); 
 	refresh();
+}
+
+void build_color_pairs(){
+	
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(4, COLOR_BLUE, COLOR_BLACK);
+	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(6, COLOR_CYAN, COLOR_BLACK);
+	init_pair(7, COLOR_WHITE, COLOR_BLACK);
 }
 
 WINDOW *create_newwin(int height, int width, int starty, int startx) {

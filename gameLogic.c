@@ -14,6 +14,7 @@ const bool DEAD = false;
 
 MEVENT event;
 
+
 // Use pointers to update current x,y
 void changeYX(int ch, int *curry, int *currx, int maxy, int maxx) {
 	        
@@ -152,7 +153,7 @@ bool stillAlive(struct Cell* front) {
 int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 	int turns = 0;
 	nodelay(*gameWindow,TRUE);
-
+	int colorValue = 1;
 	while(stillAlive(front)) {
 		struct Cell* temp = front;
 
@@ -230,9 +231,13 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 		}			
 		
 		wrefresh(*gameWindow);
-
-		if (wgetch(*gameWindow)=='q')
-		{
+		int ch = wgetch(*gameWindow);
+		if (ch =='c'){
+			colorValue++;
+			wattron(*gameWindow,COLOR_PAIR(colorValue));
+			if (colorValue ==8){ colorValue = 1; }
+		}
+		if (ch =='q'){
 			break;
 		}
 		usleep(1000000);
