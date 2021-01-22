@@ -16,4 +16,4 @@ void changeCell(struct Cell* cel);
 void printList(struct Cell* cel);
 void build_color_pairs();
 void addCells(int celly, int cellx, int maxy, int maxx);
-#endif // SUDOKU_HZ
+#endif // GAMELOGIC_H

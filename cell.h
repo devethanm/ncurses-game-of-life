@@ -5,6 +5,8 @@
 
 extern const bool ALIVE;
 extern const bool DEAD;
+extern const char aliveChar;
+extern const char deadChar;
 
 struct Cell {
 	int y;

@@ -9,6 +9,8 @@
 
 const bool ALIVE = true;
 const bool DEAD = false;
+const char aliveChar = '@';
+const char deadChar = '*';
 // head is set to NULL at first, and is then assigned the address of the first cell 
 // that is added by the user. see addCells method
 
@@ -208,11 +210,8 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 
 			temp = temp->next;
 		}
-    		
-    		// All other live cells die in the next generation. 
-			// Similarly, all other dead cells stay dead.
-
-
+    	// All other live cells die in the next generation. 
+		// Similarly, all other dead cells stay dead.
 		temp = front;
 		while(temp != NULL) {
 			if(temp->shouldDie){
@@ -220,11 +219,11 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 				temp->shouldDie = false;
 				if(isAlive(temp)) {
 					
-					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '@');	
+					mvwprintw(*gameWindow, temp->y, temp->x, "%c", aliveChar);	
 				}
 				else {
 					
-					mvwprintw(*gameWindow, temp->y, temp->x, "%c", '*');
+					mvwprintw(*gameWindow, temp->y, temp->x, "%c", deadChar);
 				}
 			}
 			temp = temp->next;
@@ -232,6 +231,7 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 		
 		wrefresh(*gameWindow);
 		int ch = wgetch(*gameWindow);
+		// Change color if c is pressed.
 		if (ch =='c'){
 			colorValue++;
 			wattron(*gameWindow,COLOR_PAIR(colorValue));
@@ -248,50 +248,3 @@ int runGame(WINDOW **gameWindow, struct Cell* front, struct Cell* back) {
 	printList(front);
 	return turns;
 }
-
-
-
-/*
-void addCells(int celly, int cellx, int maxy, int maxx) {
-	// This method is called when the user clicks/or pressed e to add a cell
-	// sends the x and y coordinates of the cell they were on
-	// then adds that cell and its neighbors to activeCells
-	// however, only the cell they selected will be alive
-	
-	if(head != NULL) {
-		// this method if statement is reached the second time a user clicks
-		// on a cell, here we have to loop through existing cells to make sure 
-		// we dont add duplicate cells.
-		// additionally, we will check if the cell they clicked is already apart of our linked list
-		// if it is in the list, and its dead, then all we need to do is changeCell() and make it alive
-		
-		// struct Cell* firstdCell = head->next;	
-		//struct Cell* temp = head;
-
-		// printList();
-
-		// while(temp != NULL) {
-		// 	temp = temp->next;	
-		// }
-			
-	}
-	else {
-		// the first time a user clicks on a cell, we have to add a total of 9 cells to the list
-		// one for the cell they selected, and 8 for all of its neighboring cells
-		// im adding the middle cell first, then going top to bottom, left to right, 
-		// skipping the middle cell
-		// struct Cell* c1 = (struct Cell*) malloc(sizeof(struct Cell));
-		
-		// below is what im trying to do but it throws errors im not sure how we are supposed to define new cells
-		
-		// we will just add all cells no matter if the user clicked on an edge for now
-		// we can add checks to delete cells that have gone outside of the gameWindow later
-		
-		//struct Cell c1 = { celly, cellx, true, NULL }; // middle cell	
-
-		// linking all cells
-		// head = &c1;
-		// c1.next = &c2;
-	}
-}
-*/
